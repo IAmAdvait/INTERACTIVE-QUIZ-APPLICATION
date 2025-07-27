@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz App</title>
+  <style>
+    body {
+  	font-family: Arial, sans-serif;
+  	background: url('./F1.jpg') no-repeat center center fixed;
+  	background-size: cover;
+  	display: flex;
+  	justify-content: center;
+  	align-items: center;
+  	height: 100vh;
+  	margin: 0;
+	
+    }
+    .quiz-container {
+  	background: url('logo.png') no-repeat center center;
+ 	background-size: cover;
+  	padding: 2rem;
+  	border-radius: 10px;
+  	box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  	width: 400px;
+	}
+
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    .answers button {
+      display: block;
+      width: 100%;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: white;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .answers button:hover {
+      background: #e0e0e0;
+    }
+    .score {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .progress-container {
+      background: #e0e0e0;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 10px;
+      margin-bottom: 1rem;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: #4caf50;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="quiz-container">
+    <div class="progress-container">
+      <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="question" id="question">Loading question...</div>
+    <div class="answers" id="answers"></div>
+    <div class="score" id="score"></div>
+  </div>
+
+  <script>
+    // Array of quiz questions with options and correct answers
+    const questions = [
+      {
+        question: "Which team has won the most F1 championships?",
+        options: ["Mclaren", "Red Bull", "Mercedes", "Ferrari"],
+        answer: "Ferrari"
+      },
+      {
+        question: "Who has won most F1 races?",
+        options: ["Lewis Hamilton", "Michael Schumacher", "Sebastian Vettel", "Max Verstappen"],
+        answer: "Lewis Hamilton"
+      },
+      {
+        question: "Who is the current F1 Champion?",
+        options: ["Lewis Hamilton", "Oscar Piastri", "Charles Leclerc", "Max Verstappen"],
+        answer: "Max Verstappen"
+      }
+    ];
+
+    // Track the current question index and score
+    let currentQuestion = 0;
+    let score = 0;
+
+    // Get references to DOM elements
+    const questionElement = document.getElementById("question");
+    const answersElement = document.getElementById("answers");
+    const scoreElement = document.getElementById("score");
+    const progressBar = document.getElementById("progressBar");
+
+    // Function to load and display the current question
+    function loadQuestion() {
+      const q = questions[currentQuestion]; // Get the current question object
+      questionElement.textContent = q.question; // Set question text
+      answersElement.innerHTML = ""; // Clear previous options
+
+      // Create buttons for each answer option
+      q.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.textContent = option; // Set button text
+        btn.onclick = () => handleAnswer(option); // Set click handler
+        answersElement.appendChild(btn); // Add button to the DOM
+      });
+
+      // Update progress bar
+      updateProgressBar();
+    }
+
+    // Function to handle user's answer selection
+    function handleAnswer(selected) {
+      const correct = questions[currentQuestion].answer; // Get the correct answer
+
+      // Provide feedback and update score if answer is correct
+      if (selected === correct) {
+        score++;
+        alert("Correct!");
+      } else {
+        alert(`Wrong! Correct answer: ${correct}`);
+      }
+
+      currentQuestion++; // Move to the next question
+
+      // Check if more questions remain or show final score
+      if (currentQuestion < questions.length) {
+        loadQuestion();
+      } else {
+        showScore();
+      }
+    }
+
+    // Function to display the final score
+    function showScore() {
+      questionElement.textContent = "Quiz Completed!"; // Update message
+      answersElement.innerHTML = ""; // Clear options
+      scoreElement.textContent = `Your Score: ${score} / ${questions.length}`; // Show final score
+      progressBar.style.width = "100%"; // Fill progress bar
+    }
+
+    // Function to update the progress bar based on current question
+    function updateProgressBar() {
+      const progress = (currentQuestion / questions.length) * 100;
+      progressBar.style.width = `${progress}%`;
+    }
+
+    // Start the quiz by loading the first question
+    loadQuestion();
+  </script>
+</body>
+</html>
